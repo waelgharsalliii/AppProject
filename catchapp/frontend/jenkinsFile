@@ -53,7 +53,7 @@ pipeline {
                         sh 'docker push waelgharsalli/frontend-pfe:latest'
                     }
                 }
-            }
+            }}
         
 
         stage('Publish') {
