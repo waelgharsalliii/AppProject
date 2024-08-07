@@ -38,7 +38,7 @@ pipeline {
             steps {
                 dir('catchapp/frontend') { // Ensure you're in the correct directory
                     script {
-                        sh 'docker build -t waelgharsalli/frontend-pfe .'
+                        sh 'docker build -t waelgharsalli/frontend-pfe:latest .'
                     }
                 }
             }
