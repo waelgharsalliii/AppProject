@@ -1,0 +1,11 @@
+.github
+.nyc_output
+.scannerwork
+node_modules
+Tests
+.gitignore
+Dockerfile
+Jenkinsfile
+my.npmrc
+sonar-project.properties
+Conf.mocharc.js

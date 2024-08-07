@@ -1,0 +1,13 @@
+
+
+.vscode
+coverage
+.scannerwork
+node_modules
+
+.gitignore
+Dockerfile
+jenkinsfile
+my.npmrc
+sonar-project.properties
+jest.config.js

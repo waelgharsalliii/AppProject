@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    stages {
+            stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/waelgharsalliii/catchapp.git'
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    // Build Docker images using Docker Compose
+                    sh 'docker-compose -f docker-compose.yml build'
+                }
+            }
+        }
+
+              stage('Deploy') {
+                steps {
+                  script {
+                    echo 'Starting Docker Compose services...'
+                    // Start Docker Compose services in detached mode
+                    sh 'docker-compose -f docker-compose.yml up -d'
+                    
+                }
+            }
+        }
+                
+             stage('Wait for 5 Minutes') {
+               steps {
+                script {
+                    echo 'Waiting for 5 minutes to allow the services to run...'
+                    // Wait for 5 minutes
+                    sleep(time: 5, unit: 'MINUTES')
+                }
+            }
+        }
+
+            stage('Teardown') {
+              steps {
+                script {
+                    echo 'Stopping Docker Compose services...'
+                    // Stop and remove Docker Compose services
+                    sh 'docker-compose -f docker-compose.yml down'
+                }
+            }
+        }
+      
+    }
+}

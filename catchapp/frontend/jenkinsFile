@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout Git') {
+            steps {
+                // Checkout the catchapp repository from GitHub
+                checkout scmGit(
+                    branches: [[name: '*/main']],
+                    extensions: [],
+                    userRemoteConfigs: [[credentialsId: 'jenkins-front-ssh', url: 'https://github.com/waelgharsalliii/catchapp.git']]
+                )
+            }
+        }
+
+        stage('Install dependencies') {
+            steps {
+                dir('frontend') { // Navigate to the frontend directory if it exists
+                    // Install Node.js dependencies
+                    sh 'npm install'
+                }
+            }
+        }
+    
+        stage('SonarQube') {
+            steps { 
+                dir('frontend') { // Ensure you're in the correct directory
+                    nodejs(nodeJSInstallationName: 'NodeJs') {
+                        withSonarQubeEnv('sonar') { 
+                            sh 'npm run sonar'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('frontend') { // Ensure you're in the correct directory
+                    script {
+                        sh 'docker build -t waelgharsalli/frontend-pfe .'
+                    }
+                }
+            }
+        }
+
+        /*stage('Login and Push to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                        sh 'docker push waelgharsalli/frontend-pfe:latest'
+                    }
+                }
+            }
+        }*/
+
+        stage('Publish') {
+            steps {
+                dir('frontend') { // Ensure you're in the correct directory
+                    withCredentials([file(credentialsId: 'nexus-front-cred', variable: 'mynpmrc')]) {
+                        sh "npm publish --userconfig $mynpmrc --loglevel verbose"
+                    }
+                }
+            }
+        }
+         stage('Local Test'){
+            steps {
+               build 'TestLocaly'
+        }}
+    }
+}

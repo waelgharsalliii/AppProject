@@ -1,0 +1,3 @@
+#!/bin/bash
+
+kubeadm join 192.168.56.2:6443 --token 6q8xqn.tnks3fiow4720tnh --discovery-token-ca-cert-hash sha256:5f7875e5610c69efb50fd51d51fe62bfc97417a51d84e6343cfd745872da21bd 

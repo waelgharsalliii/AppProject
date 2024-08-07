@@ -1,0 +1,84 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clone the entire repository
+                git branch: 'main', url: 'https://github.com/waelgharsalliii/catchapp.git'
+                // Change to the backend directory
+                dir('backend') {
+                    // This will be the working directory for subsequent stages
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('backend') {
+                    nodejs(nodeJSInstallationName: 'NodeJs') {
+                        sh 'npm install' // or 'yarn install' if you're using yarn
+                    }
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('backend') {
+                    nodejs(nodeJSInstallationName: 'NodeJs') {
+                        sh 'npm run test'
+                    }
+                }
+            }
+        }
+
+        stage('SonarQube') {
+            steps {
+                dir('backend') {
+                    nodejs(nodeJSInstallationName: 'NodeJs') {
+                        withSonarQubeEnv('sonar') {
+                            sh 'npm run sonar'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('backend') {
+                    sh 'docker build -t waelgharsalli/backend-pfe .'
+                }
+            }
+        }
+
+       /* stage('Login and Push to Docker Hub') {
+            steps {
+                dir('backend') {
+                    script {
+                        withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                            sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                            sh 'docker push waelgharsalli/backend-pfe:latest'
+                        }
+                    }
+                }
+            }
+        }*/
+
+        stage('Publish') {
+            steps {
+                dir('backend') {
+                    withCredentials([file(credentialsId: 'nexus-cred', variable: 'mynpmrc')]) {
+                        sh "npm publish --userconfig $mynpmrc --loglevel verbose"
+                    }
+                }
+            }
+        }
+        stage('build FRONTEND-APP')
+        {
+          steps {
+            build 'Frontend-App'
+        }}
+    }
+}

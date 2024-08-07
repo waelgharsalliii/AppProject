@@ -1,0 +1,277 @@
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  Heading,
+  Image,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
+import { ChakraProvider } from "@chakra-ui/react";
+import { NavLink, useNavigate } from "react-router-dom";
+import Footer from "../../components/Footer";
+import { Toaster, toast } from 'react-hot-toast';
+
+export default function EventDetails() {
+  const [event, setEvent] = useState(null);
+  const [user, setUser] = useState(null);
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
+  const [profilePic, setProfilePic] = useState("");
+  const Id = localStorage.getItem("Id");
+  const navigate=useNavigate();
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_URL}/users/${Id}`, { method: "GET" })
+      .then((response) => response.json())
+      .then((data) => {
+        setUser(data);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setFname(user.fname);
+      setLname(user.lname);
+      setProfilePic(user.profilePic);
+    }
+  }, [user]);
+
+  const LogoutHandler = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("Id");
+  };
+
+  useEffect(() => {
+    const EventId = localStorage.getItem("EventId");
+    const FetchEvent = async () => {
+      await fetch(`${process.env.REACT_APP_API_URL}/events/${EventId}`, { method: "GET" })
+        .then((response) => response.json())
+        .then((data) => {
+          setEvent(data);
+        });
+    };
+    FetchEvent();
+  }, []);
+
+  const NavBarUser = (
+    <div className="container-xxl position-relative p-0">
+      <nav
+        id="navbar"
+        className="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0"
+      >
+        <div className="navbar-brand">
+          <img src="img/logo.png" alt="logo" className="navbar-logo" />
+        </div>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarCollapse"
+        >
+          <span className="fa fa-bars"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarCollapse">
+          <div className="navbar-nav ms-auto py-0">
+            <NavLink to="/home" className="nav-item nav-link active">
+              Home
+            </NavLink>
+            <a href="" className="nav-item nav-link">
+              About
+            </a>
+            <NavLink to="/EventsList" className="nav-item nav-link">
+              Events
+            </NavLink>
+            <NavLink to="/payment" className="nav-item nav-link">
+              Clubs
+            </NavLink>
+            <div className="nav-item dropdown">
+                <a
+                  href="#"
+                  className="nav-link dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <img
+                    src={`img/${profilePic}`}
+                    alt="Image"
+                    height="40"
+                    width="50"
+                    style={{
+                      borderRadius: "50%",
+                      border: "2px solid #ccc",
+                      boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.2)",
+                      padding: "2px",
+                    }}
+                  />
+                  <span style={{ marginLeft: "8px" }}>
+                    {fname} {lname}
+                  </span>
+                </a>
+              <div className="dropdown-menu m-0">
+                <NavLink to="/Profile" className="dropdown-item">
+                  Edit Profile
+                </NavLink>
+                <NavLink
+                  to="/Login"
+                  className="dropdown-item"
+                  onClick={LogoutHandler}
+                >
+                  Logout
+                </NavLink>
+                <a href="" className="dropdown-item">
+                  About
+                </a>
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="btn text-secondary ms-3"
+            data-bs-toggle="modal"
+            data-bs-target="#searchModal"
+          >
+            <i className="fa fa-search"></i>
+          </button>
+        </div>
+      </nav>
+      <div className="container-xxl py-5 bg-primary hero-header mb-5">
+        <div className="container my-5 py-5 px-lg-5">
+          <div className="row g-5 py-5">
+            <div className="col-lg-6 text-center text-lg-start">
+              {/* <h1 className="text-white mb-4 animated zoomIn">
+                        All in one SEO tool need to grow your business rapidly
+                      </h1>
+                      <p className="text-white pb-3 animated zoomIn">
+                        Tempor rebum no at dolore lorem clita rebum rebum ipsum rebum
+                        stet dolor sed justo kasd. Ut dolor sed magna dolor sea diam.
+                        Sit diam sit justo amet ipsum vero ipsum clita lorem
+                      </p> */}
+            </div>
+            <div className="col-lg-6 text-center text-lg-start">
+              <img className="img-fluid" src="" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="modal fade" id="searchModal" tabIndex="-1">
+        <div className="modal-dialog modal-fullscreen">
+          <div
+            className="modal-content"
+            style={{ backgroundColor: "rgba(29, 29, 39, 0.7)" }}
+          >
+            <div className="modal-header border-0">
+              <button
+                type="button"
+                className="btn bg-white btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body d-flex align-items-center justify-content-center">
+              <div className="input-group" style={{ maxWidth: "600px" }}>
+                <input
+                  type="text"
+                  className="form-control bg-transparent border-light p-3"
+                  placeholder="Type search keyword"
+                />
+                <button className="btn btn-light px-4">
+                  <i className="bi bi-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+
+  const JoinHandler = async (e,event) => {
+    e.preventDefault();
+    const Id = localStorage.getItem("Id");
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/payevent/${event._id}/${Id}/payment`,
+        { method: "POST" }
+      );
+      const data = await response.json();
+      const paymentId = data.result.link.substring(
+        data.result.link.lastIndexOf("/") + 1
+      );
+      localStorage.setItem("paymentId", paymentId);
+      localStorage.setItem("eventId", event._id);
+      if (response.ok) {
+        window.location.href = data.result.link;
+      } else {
+        const errorResponse = await response.json();
+        toast.error(errorResponse.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while trying to join the event");
+    }
+  }
+
+
+  const CancelHandler=(e)=> {
+    e.preventDefault();
+    localStorage.removeItem("EventId");
+    navigate("/EventsList")
+  }
+
+  
+
+  return (
+    <>
+      {NavBarUser}
+      <Toaster position="top-center" reverseOrder={false} />
+      {event ? (
+        <ChakraProvider>
+          <Card
+            flexDirection={{ base: "column", sm: "row" }}
+            overflow="hidden"
+            variant="outline"
+          >
+            <Image
+              objectFit="cover"
+              maxWidth={{ base: "100%", sm: "200px" }}
+              src={process.env.PUBLIC_URL + `/img/${event.img}`}
+              alt="Caffe Latte"
+            />
+
+            <Stack>
+              <CardBody>
+                <Heading size="md">Event Title: {event.title}</Heading>
+
+                <Text py="2">Event Description: {event.description}</Text>
+                <Text py="2">Event Location: {event.location}</Text>
+                <Text py="2">Event Fee: {event.fee}DT</Text>
+              </CardBody>
+
+              <CardFooter>
+                <Button variant="solid" colorScheme="blue" onClick={(e)=>JoinHandler(e,event)}
+                disabled={
+                  true}
+                >
+                {user.events.includes(event._id) ? "Already Joined" : "Join"}
+                </Button>
+                <Button variant="solid" colorScheme="red" onClick={CancelHandler} style={{marginLeft:"20px"}}>
+                  Cancel
+                </Button>
+              </CardFooter>
+            </Stack>
+          </Card>
+        </ChakraProvider>
+      ) : (
+        <Text>Loading event details...</Text>
+      )}
+      <Footer />
+    </>
+  );
+}
