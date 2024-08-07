@@ -78,7 +78,7 @@ pipeline {
         stage('build FRONTEND-APP')
         {
           steps {
-            build 'Frontend
+            build 'Frontend'
         }}
     }
 }
