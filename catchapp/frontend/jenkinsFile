@@ -38,22 +38,23 @@ pipeline {
             steps {
                 dir('catchapp/frontend') { // Ensure you're in the correct directory
                     script {
-                        sh 'docker build -t waelgharsalli/frontend-pfe:latest .'
+                        sh 'docker build -t waelgharsalli/frontend-pfe .'
                     }
                 }
             }
         }
 
-        /*stage('Login and Push to Docker Hub') {
+        stage('Login and Push to Docker Hub') {
             steps {
-                script {
+               dir('catchapp/backend'){
+               
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                         sh 'docker push waelgharsalli/frontend-pfe:latest'
                     }
                 }
             }
-        }*/
+        
 
         stage('Publish') {
             steps {
