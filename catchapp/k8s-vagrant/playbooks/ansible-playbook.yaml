@@ -7,7 +7,7 @@
     pod_network_cidr: 192.168.0.0/16
     custom_resource_remote_src: /tmp/calico-custom-resource.yaml
     join_cluster_remote_src: /tmp/joincluster
-    helm_chart_path: /path/to/your/helm/chart
+    helm_chart_path: /home/vagrant/catch-app
   tasks:
 
     - name: Remove generated ubuntu hosts from /etc/hosts
