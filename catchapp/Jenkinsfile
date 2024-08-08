@@ -61,8 +61,7 @@ pipeline {
           stage('Deploy Application with Helm') {
             steps {
                 dir('catchapp') {
-                    // Ensure Helm is installed
-                    sh 'helm version'
+               
 
                     // Deploy or upgrade the application using Helm
                     sh 'helm upgrade --install catch-app ./catch-app'
