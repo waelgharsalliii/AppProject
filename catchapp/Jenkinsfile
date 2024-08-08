@@ -46,6 +46,28 @@ pipeline {
                     sh 'docker-compose -f docker-compose.yml down'
                 }
             }
+        }    
+         stage('Setup Kubernetes') {
+            steps {
+                dir('catchapp') {
+                    // Ensure Ansible is installed
+                    sh 'ansible --version'
+
+                    // Run Ansible playbook to configure Kubernetes
+                    sh 'ansible-playbook -i inventory/vagrant.hosts playbooks/ansible-playbook.yaml'
+                }
+            }
+        }
+          stage('Deploy Application with Helm') {
+            steps {
+                script {
+                    // Ensure Helm is installed
+                    sh 'helm version'
+
+                    // Deploy or upgrade the application using Helm
+                    sh 'helm upgrade --install catch-app ./catch-app'
+                }
+            }
         }
       
     }
