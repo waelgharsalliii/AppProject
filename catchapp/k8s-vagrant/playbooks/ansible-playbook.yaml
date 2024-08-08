@@ -3,16 +3,21 @@
   become: yes
   become_method: sudo
   gather_facts: yes
+  vars:
+    pod_network_cidr: 192.168.0.0/16
+    custom_resource_remote_src: /tmp/calico-custom-resource.yaml
+    join_cluster_remote_src: /tmp/joincluster
+    helm_chart_path: /path/to/your/helm/chart
   tasks:
 
-    - name: Remove generated ubuntu hosts
+    - name: Remove generated ubuntu hosts from /etc/hosts
       lineinfile:
         path: /etc/hosts
         regexp: "ubuntu-*"
         state: absent
         backup: yes
 
-    - name: Remove generated hosts
+    - name: Remove generated hosts from /etc/hosts
       lineinfile:
         path: /etc/hosts
         regexp: ".* {{ hostvars[item]['ansible_hostname']}} {{ hostvars[item]['ansible_hostname']}}"
@@ -20,7 +25,7 @@
         backup: yes
       with_items: "{{ ansible_play_batch }}"
 
-    - name: Update hosts
+    - name: Update /etc/hosts with new host entries
       lineinfile:
         path: /etc/hosts
         regexp: ".*\t{{ hostvars[item]['ansible_hostname']}}\t{{ hostvars[item]['ansible_hostname']}}"
@@ -45,22 +50,22 @@
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
-    - name: Add apt repository for stable version
+    - name: Add apt repository for Docker stable version
       apt_repository:
         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
         state: present
 
-    - name: Install docker and dependecies
-      apt: 
+    - name: Install Docker and dependencies
+      apt:
         name:
-          - docker-ce 
-          - docker-ce-cli 
+          - docker-ce
+          - docker-ce-cli
           - containerd.io
         state: present
         update_cache: yes
       notify: Check docker status
 
-    - name: Configure containerd config
+    - name: Configure containerd
       copy:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
@@ -81,7 +86,7 @@
         name: "{{ ansible_user }}"
         groups: docker
         append: yes
-    
+
     - name: Remove swapfile from /etc/fstab
       mount:
         name: "{{ item }}"
@@ -94,22 +99,22 @@
     - name: Disable swap
       command: swapoff -a
       when: ansible_swaptotal_mb > 0
-    
+
     - name: Ensure apt keyrings directory exists
       file:
         path: /etc/apt/keyrings
         state: directory
 
-    - name: Delete kubernetes keyrings if exists
+    - name: Delete Kubernetes keyrings if they exist
       file:
         path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
         state: absent
-    
-    - name: Add kubernetes APT repository key
+
+    - name: Add Kubernetes APT repository key
       shell: >
         curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-    
-    - name: Add kubernetes repository to sources list
+
+    - name: Add Kubernetes repository to sources list
       apt_repository:
         repo: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
         state: present
@@ -117,7 +122,7 @@
         update_cache: yes
 
     - name: Install Kubernetes binaries
-      apt: 
+      apt:
         name:
           - kubelet=1.29.*
           - kubeadm=1.29.*
@@ -130,13 +135,13 @@
         path: /etc/default/kubelet
         state: touch
 
-    - name: Configure node ip
+    - name: Configure node IP in /etc/default/kubelet
       lineinfile:
         path: /etc/default/kubelet
         line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
         state: present
 
-    - name: Restart kubelet
+    - name: Restart kubelet service
       service:
         name: kubelet
         state: restarted
@@ -144,11 +149,16 @@
         enabled: yes
 
   handlers:
-    - name: Check docker status
+    - name: Check Docker status
       service:
         name: docker
         state: started
         enabled: yes
+
+    - name: Restart kubelet
+      service:
+        name: kubelet
+        state: restarted
 
 - name: Master Node Setup
   hosts: master_nodes
@@ -161,31 +171,43 @@
     join_cluster_remote_src: /tmp/joincluster
   tasks:
 
-    - name: Initialize kubernetes cluster
+    - name: Check if Kubernetes cluster is initialized
+      command: kubeadm config view
+      register: kubeadm_status
+      failed_when: false
+      changed_when: false
+
+    - name: Initialize Kubernetes cluster if not already initialized
       command: kubeadm init --apiserver-advertise-address="{{ ansible_ssh_host }}" --apiserver-cert-extra-sans="{{ ansible_ssh_host }}" --node-name {{ ansible_hostname }} --pod-network-cidr={{ pod_network_cidr }}
+      when: kubeadm_status.rc != 0
 
     - name: Setup kubeconfig for {{ ansible_user }} user
       command: "{{ item }}"
       with_items:
-      - mkdir -p /home/{{ ansible_user }}/.kube
-      - cp -i /etc/kubernetes/admin.conf /home/{{ ansible_user }}/.kube/config
-      - chown {{ ansible_user }}:{{ ansible_user }} /home/{{ ansible_user }}/.kube/config
+        - mkdir -p /home/{{ ansible_user }}/.kube
+        - cp -i /etc/kubernetes/admin.conf /home/{{ ansible_user }}/.kube/config
+        - chown {{ ansible_user }}:{{ ansible_user }} /home/{{ ansible_user }}/.kube/config
+      when: kubeadm_status.rc == 0
 
-    - name: Install calico pod network
-      become: false
+    - name: Check if Calico pod network is installed
+      command: kubectl get pods -n kube-system -l k8s-app=calico-node
+      register: calico_status
+      failed_when: false
+      changed_when: false
+
+    - name: Install Calico pod network if not installed
       command: kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/tigera-operator.yaml
-      register: install_calico_pod_network
+      when: calico_status.rc != 0
 
-    - name: Copy calico custom resource
+    - name: Copy Calico custom resource
       template:
         src: calico-custom-resource.yaml.j2
         dest: "{{ custom_resource_remote_src }}"
 
     - name: Install custom resource pod network
-      become: false
       command: kubectl create -f {{ custom_resource_remote_src }}
       register: install_calico_custom_resource
-      when: install_calico_pod_network is succeeded
+      when: calico_status.rc == 0
 
     - name: Generate and save cluster join command
       command: kubeadm token create --print-join-command
@@ -198,16 +220,26 @@
         dest: "{{ join_cluster_remote_src }}"
       when: join_cluster_command is succeeded
 
-    - name: Fetch joincluster into local file
+    - name: Fetch join command into local file
       fetch:
         src: "{{ join_cluster_remote_src }}"
         dest: files/joincluster
         flat: yes
-    #helm 
-    - name: Download and install Helm
+
+    - name: Check if Helm is installed
+      command: helm version
+      register: helm_version
+      failed_when: false
+      changed_when: false
+
+    - name: Install Helm if not installed
       shell: curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-      tags: 
-        - install_Helm  
+      when: helm_version.rc != 0
+
+    - name: Deploy Application with Helm
+      command: helm upgrade --install catch-app {{ helm_chart_path }}
+      when: helm_version.rc == 0
+
 - name: Worker Node Setup
   hosts: worker_nodes
   become: yes
@@ -216,14 +248,14 @@
   vars:
     join_cluster_remote_src: /tmp/joincluster
   tasks:
-    
+
     - name: Copy the join command to server location
       copy:
         src: joincluster
         dest: "{{ join_cluster_remote_src }}"
-        mode: 0777
+        mode: '0777'
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
-    
-    - name: Join the node to cluster
+
+    - name: Join the node to the cluster
       command: sh {{ join_cluster_remote_src }}
