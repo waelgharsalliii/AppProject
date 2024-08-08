@@ -50,7 +50,8 @@ pipeline {
          stage('Setup Kubernetes') {
             steps {
                 dir('catchapp') {
-                  
+                   // Ensure Ansible is installed
+                    sh 'ansible --version'
 
                     // Run Ansible playbook to configure Kubernetes
                     sh 'ansible-playbook -i inventory/vagrant.hosts k8s-vagrant/playbooks/ansible-playbook.yaml'
@@ -59,7 +60,7 @@ pipeline {
         }
           stage('Deploy Application with Helm') {
             steps {
-                script {
+                dir('catchapp') {
                     // Ensure Helm is installed
                     sh 'helm version'
 
