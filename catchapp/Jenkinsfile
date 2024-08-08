@@ -64,7 +64,7 @@ pipeline {
                
 
                     // Deploy or upgrade the application using Helm
-                    sh 'helm upgrade --install catch-app ./catch-app/catch-app-0.1.0.tgz'
+                    sh 'helm upgrade --install catch-app ./catch-app'
                 }
             }
         }
