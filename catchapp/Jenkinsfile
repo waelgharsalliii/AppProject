@@ -53,7 +53,7 @@ pipeline {
                   
 
                     // Run Ansible playbook to configure Kubernetes
-                    sh 'ansible-playbook -i inventory/vagrant.hosts playbooks/catchapp/k8s-vagrant/playbooks/ansible-playbook.yaml'
+                    sh 'ansible-playbook -i inventory/vagrant.hosts playbooks/k8s-vagrant/playbooks/ansible-playbook.yaml'
                 }
             }
         }
