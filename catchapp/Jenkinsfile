@@ -28,15 +28,15 @@ pipeline {
             }
         }
                 
-             stage('Wait for 5 Minutes') {
+            /* stage('Wait for 3 Minutes') {
                steps {
                 dir('catchapp') {
                     echo 'Waiting for 5 minutes to allow the services to run...'
                     // Wait for 5 minutes
-                    sleep(time: 5, unit: 'MINUTES')
+                    sleep(time: 3, unit: 'MINUTES')
                 }
             }
-        }
+        }*/
 
             stage('Teardown') {
               steps {
@@ -50,8 +50,7 @@ pipeline {
          stage('Setup Kubernetes') {
             steps {
                 dir('catchapp') {
-                    // Ensure Ansible is installed
-                    sh 'ansible --version'
+                  
 
                     // Run Ansible playbook to configure Kubernetes
                     sh 'ansible-playbook -i inventory/vagrant.hosts playbooks/ansible-playbook.yaml'
