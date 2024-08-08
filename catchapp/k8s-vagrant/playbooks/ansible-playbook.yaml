@@ -236,9 +236,7 @@
       shell: curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
       when: helm_version.rc != 0
 
-    - name: Deploy Application with Helm
-      command: helm upgrade --install catch-app {{ helm_chart_path }}
-      when: helm_version.rc == 0
+
 
 - name: Worker Node Setup
   hosts: worker_nodes
