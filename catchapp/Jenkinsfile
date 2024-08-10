@@ -73,6 +73,15 @@ pipeline {
                 }
             }
         }
+
+              steps {
+                script {
+                    // Fetch the Helm chart from the master node directly
+                    // Replace with the correct path and ensure the Jenkins server can access the master node
+                    sh 'scp vagrant@192.168.56.2:/home/vagrant/catch-app/catch-app-0.1.0.tgz ./catch-app-0.1.0.tgz'
+                }
+            }
+        }
         
           stage('Deploy Application with Helm') {
             steps {
