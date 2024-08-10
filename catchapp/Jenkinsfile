@@ -88,7 +88,7 @@ pipeline {
         
           stage('Deploy Application with Helm') {
             steps {
-                script {
+                dir('catchapp') {
                
 
                     // Deploy or upgrade the application using Helm
