@@ -92,7 +92,7 @@ pipeline {
                
 
                     // Deploy or upgrade the application using Helm
-                    sh 'helm upgrade --install catch-app ./catch-app --namespace default'
+                    sh 'helm upgrade --install catch-app /var/lib/jenkins/jobs/LocallyTest/workspace/catchapp/catch-app --namespace default'
                 }
             }
         }
