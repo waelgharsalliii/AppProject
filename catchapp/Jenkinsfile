@@ -62,7 +62,7 @@ pipeline {
             }
         }
 
-            
+
         stage('Check Kubernetes Connectivity') {
             steps {
                 script {
@@ -73,7 +73,9 @@ pipeline {
                 }
             }
         }
-
+        
+        
+        stage('Fetch Helm Chart') {
               steps {
                 script {
                     // Fetch the Helm chart from the master node directly
