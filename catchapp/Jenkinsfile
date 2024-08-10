@@ -74,7 +74,7 @@ pipeline {
             }
         }
         
-         stage('Fetch Helm Chart') {
+        /* stage('Fetch Helm Chart') {
             steps {
                 script {
                     // Ensure Jenkins has correct SSH access and the correct known_hosts
@@ -84,7 +84,7 @@ pipeline {
                     '''
                 }
             }
-        }
+        }*/
         
           stage('Deploy Application with Helm') {
             steps {
@@ -92,7 +92,7 @@ pipeline {
                
 
                     // Deploy or upgrade the application using Helm
-                    sh 'helm upgrade --install catch-app ./catch-app --namespace default --values values.yaml'
+                    sh 'helm upgrade --install catch-app ./catch-app --namespace default'
                 }
             }
         }
