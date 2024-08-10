@@ -60,6 +60,18 @@ pipeline {
                 }
             }
         }
+
+             stages {
+        stage('Check Kubernetes Connectivity') {
+            steps {
+                script {
+                    sh '''
+                    kubectl cluster-info
+                    kubectl get nodes
+                    '''
+                }
+            }
+        }
           stage('Deploy Application with Helm') {
             steps {
                 dir('catchapp') {
