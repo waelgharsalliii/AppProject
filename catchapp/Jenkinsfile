@@ -73,6 +73,15 @@ pipeline {
                 }
             }
         }
+        
+            stage('Copy Helm Chart from Cluster') {
+            steps {
+                script {
+                    // Copy the packaged Helm chart from the Kubernetes cluster to Jenkins workspace
+                    sh 'kubectl cp default:/home/vagrant/catch-app/catch-app-0.1.0.tgz /var/lib/jenkins/workspace/catchapp/catch-app-0.1.0.tgz'
+                }
+            }
+        }
           stage('Deploy Application with Helm') {
             steps {
                 dir('catchapp') {
