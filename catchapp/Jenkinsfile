@@ -82,7 +82,8 @@ pipeline {
                
 
                     // Deploy or upgrade the application using Helm
-                    sh 'helm upgrade --install catch-app ./catch-app --namespace default'
+                    sh 'helm upgrade --install catch-app ./catch-app --namespace default --values ./values.yaml
+'
                 }
             }
         }
