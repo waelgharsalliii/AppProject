@@ -11,7 +11,7 @@ pipeline {
             }
         }
 
-        stage('Build Docker Images') {
+/*        stage('Build Docker Images') {
             steps {
                dir('catchapp'){
                     // Build Docker images using Docker Compose
@@ -31,7 +31,7 @@ pipeline {
             }
         }
                 
-            /* stage('Wait for 3 Minutes') {
+            stage('Wait for 3 Minutes') {
                steps {
                 dir('catchapp') {
                     echo 'Waiting for 5 minutes to allow the services to run...'
@@ -39,7 +39,7 @@ pipeline {
                     sleep(time: 3, unit: 'MINUTES')
                 }
             }
-        }*/
+        }
 
             stage('Teardown') {
               steps {
@@ -49,7 +49,24 @@ pipeline {
                     sh 'docker-compose -f docker-compose.yml down'
                 }
             }
-        }    
+        }    */
+              stage('Verify Private Key Files') {
+            steps {
+                dir('catchapp') {
+                    sh 'ls -l .vagrant/machines/master/virtualbox/private_key'
+                    sh 'ls -l .vagrant/machines/worker-01/virtualbox/private_key'
+                }
+            }
+        }
+
+        stage('Setup Kubernetes') {
+            steps {
+                dir('catchapp') {
+                    sh 'ansible --version'
+                    sh 'ansible-playbook -i inventory/vagrant.hosts k8s-vagrant/playbooks/ansible-playbook.yaml -vvv'
+                }
+            }
+        }
          stage('Setup Kubernetes') {
             steps {
                 dir('catchapp') {
