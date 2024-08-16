@@ -61,12 +61,12 @@ pipeline {
     
              stage('Setup Kubernetes') {
                 steps {
-                    dir('catchapp/k8s-vagrant') {
+                    dir('catchapp') {
                        // Ensure Ansible is installed
                         sh 'ansible --version'
     
                         // Run Ansible playbook to configure Kubernetes
-                        sh 'ansible-playbook -i inventory/vagrant.hosts k8s-vagrant/playbooks/ansible-playbook.yaml'
+                        sh 'ansible-playbook -i k8s-vagrant/inventory/vagrant.hosts k8s-vagrant/playbooks/ansible-playbook.yaml'
                     }
                 }
             }
