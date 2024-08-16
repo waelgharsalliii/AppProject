@@ -181,6 +181,7 @@
       command: kubeadm init --apiserver-advertise-address="{{ ansible_ssh_host }}" --apiserver-cert-extra-sans="{{ ansible_ssh_host }}" --node-name {{ ansible_hostname }} --pod-network-cidr={{ pod_network_cidr }}
       when: kubeadm_status.rc != 0
 
+
     - name: Setup kubeconfig for {{ ansible_user }} user
       command: "{{ item }}"
       with_items:
@@ -261,8 +262,8 @@
         mode: '0777'
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
-      when: not worker_already_joined
+      when: worker_already_joined.rc != 0
 
     - name: Join the node to the cluster
       command: sh {{ join_cluster_remote_src }}
-      when: not worker_already_joined
+      when: worker_already_joined.rc != 0
