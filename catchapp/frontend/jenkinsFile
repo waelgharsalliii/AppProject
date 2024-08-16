@@ -6,7 +6,7 @@ pipeline {
             steps {
                 // Checkout the catchapp repository from GitHub
                 checkout scmGit(
-                    branches: [[name: '*/main']],
+                    branches: [[name: '*/devlope']],
                     extensions: [],
                     userRemoteConfigs: [[credentialsId: 'jenkins-front-ssh', url: 'https://github.com/waelgharsalliii/catchapp.git']]
                 )
