@@ -49,7 +49,7 @@ pipeline {
                         sh 'docker-compose -f docker-compose.yml down'
                     }
                 }
-            }    */
+            }   
             stage('Verify Private Key Files') {
                 steps {
                     dir('catchapp') {
@@ -57,7 +57,7 @@ pipeline {
                         sh 'ls -l .vagrant/machines/worker-01/virtualbox/private_key'
                     }
                 }
-            }
+            } */
     
              stage('Setup Kubernetes') {
                 steps {
