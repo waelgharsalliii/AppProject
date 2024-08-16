@@ -61,7 +61,7 @@ pipeline {
     
              stage('Setup Kubernetes') {
                 steps {
-                    dir('catchapp') {
+                    dir('catchapp/k8s-vagrant') {
                        // Ensure Ansible is installed
                         sh 'ansible --version'
     
