@@ -1,109 +1,106 @@
 pipeline {
     agent any
-  environment {
-        KUBECONFIG = '/var/lib/jenkins/.kube/config'
+      environment {
+         KUBECONFIG = '/var/lib/jenkins/.kube/config'
     }
 
-    stages {
-            stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/waelgharsalliii/AppProject.git'
-            }
-        }
-
-/*        stage('Build Docker Images') {
-            steps {
-               dir('catchapp'){
-                    // Build Docker images using Docker Compose
-                    sh 'docker-compose -f docker-compose.yml build'
-                }
-            }
-        }
-
-              stage('Deploy') {
+         stages {
+                stage('Checkout') {
                 steps {
-                 dir('catchapp'){
-                    echo 'Starting Docker Compose services...'
-                    // Start Docker Compose services in detached mode
-                    sh 'docker-compose -f docker-compose.yml up -d'
+                    git branch: 'main', url: 'https://github.com/waelgharsalliii/AppProject.git'
+                }
+            }
+    
+    /*        stage('Build Docker Images') {
+                steps {
+                   dir('catchapp'){
+                        // Build Docker images using Docker Compose
+                        sh 'docker-compose -f docker-compose.yml build'
+                    }
+                }
+            }
+    
+                  stage('Deploy') {
+                    steps {
+                     dir('catchapp'){
+                        echo 'Starting Docker Compose services...'
+                        // Start Docker Compose services in detached mode
+                        sh 'docker-compose -f docker-compose.yml up -d'
+                        
+                    }
+                }
+            }
                     
+                stage('Wait for 3 Minutes') {
+                   steps {
+                    dir('catchapp') {
+                        echo 'Waiting for 5 minutes to allow the services to run...'
+                        // Wait for 5 minutes
+                        sleep(time: 3, unit: 'MINUTES')
+                    }
                 }
             }
+    
+                stage('Teardown') {
+                  steps {
+                    dir('catchapp') {
+                        echo 'Stopping Docker Compose services...'
+                        // Stop and remove Docker Compose services
+                        sh 'docker-compose -f docker-compose.yml down'
+                    }
+                }
+            }    */
+            stage('Verify Private Key Files') {
+                steps {
+                    dir('catchapp') {
+                        sh 'ls -l .vagrant/machines/master/virtualbox/private_key'
+                        sh 'ls -l .vagrant/machines/worker-01/virtualbox/private_key'
+                    }
+                }
+            }
+    
+            stage('Setup Kubernetes') {
+                steps {
+                    dir('catchapp') {
+                        sh 'ansible --version'
+                        sh 'ansible-playbook -i inventory/vagrant.hosts k8s-vagrant/playbooks/ansible-playbook.yaml -vvv'
+                    }
+                }
+            }
+             stage('Setup Kubernetes') {
+                steps {
+                    dir('catchapp') {
+                       // Ensure Ansible is installed
+                        sh 'ansible --version'
+    
+                        // Run Ansible playbook to configure Kubernetes
+                        sh 'ansible-playbook -i inventory/vagrant.hosts k8s-vagrant/playbooks/ansible-playbook.yaml'
+                    }
+                }
+            }
+    
+    
+            stage('Check Kubernetes Connectivity') {
+                steps {
+                    script {
+                        sh '''
+                        kubectl cluster-info
+                        kubectl get nodes
+                        '''
+                    }
+                }
+            }
+            
+    
+            
+              stage('Deploy Application with Helm') {
+                steps {
+                    dir('catchapp') {
+                        sh 'helm upgrade --install catch-app ./catch-app --namespace default'
+    
+                    }
+                }
+            }
+          
         }
-                
-            stage('Wait for 3 Minutes') {
-               steps {
-                dir('catchapp') {
-                    echo 'Waiting for 5 minutes to allow the services to run...'
-                    // Wait for 5 minutes
-                    sleep(time: 3, unit: 'MINUTES')
-                }
-            }
-        }
-
-            stage('Teardown') {
-              steps {
-                dir('catchapp') {
-                    echo 'Stopping Docker Compose services...'
-                    // Stop and remove Docker Compose services
-                    sh 'docker-compose -f docker-compose.yml down'
-                }
-            }
-        }    */
-              stage('Verify Private Key Files') {
-            steps {
-                dir('catchapp') {
-                    sh 'ls -l .vagrant/machines/master/virtualbox/private_key'
-                    sh 'ls -l .vagrant/machines/worker-01/virtualbox/private_key'
-                }
-            }
-        }
-
-        stage('Setup Kubernetes') {
-            steps {
-                dir('catchapp') {
-                    sh 'ansible --version'
-                    sh 'ansible-playbook -i inventory/vagrant.hosts k8s-vagrant/playbooks/ansible-playbook.yaml -vvv'
-                }
-            }
-        }
-         stage('Setup Kubernetes') {
-            steps {
-                dir('catchapp') {
-                   // Ensure Ansible is installed
-                    sh 'ansible --version'
-
-                    // Run Ansible playbook to configure Kubernetes
-                    sh 'ansible-playbook -i inventory/vagrant.hosts k8s-vagrant/playbooks/ansible-playbook.yaml'
-                }
-            }
-        }
-
-
-        stage('Check Kubernetes Connectivity') {
-            steps {
-                script {
-                    sh '''
-                    kubectl cluster-info
-                    kubectl get nodes
-                    '''
-                }
-            }
-        }
-        
-
-        
-          stage('Deploy Application with Helm') {
-            steps {
-                dir('catchapp') {
-               
-
-                    // Deploy or upgrade the application using Helm
-                    sh 'helm upgrade --install catch-app ./catch-app --namespace default'
-
-                }
-            }
-        }
-      
     }
-}
