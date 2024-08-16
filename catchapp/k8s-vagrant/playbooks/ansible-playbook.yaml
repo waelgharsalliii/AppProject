@@ -193,7 +193,7 @@
         - mkdir -p /home/{{ ansible_user }}/.kube
         - cp -i /etc/kubernetes/admin.conf /home/{{ ansible_user }}/.kube/config
         - chown {{ ansible_user }}:{{ ansible_user }} /home/{{ ansible_user }}/.kube/config
-      when: kubeadm_status is defined and kubeadm_status.rc == 0
+      when: kubeadm_status is defined and kubeadm_status | default({}) | length > 0 and kubeadm_status.rc == 0
 
 
     - name: Check if Calico pod network is installed
