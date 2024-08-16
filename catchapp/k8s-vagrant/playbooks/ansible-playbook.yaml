@@ -203,6 +203,7 @@
       template:
         src: calico-custom-resource.yaml.j2
         dest: "{{ custom_resource_remote_src }}"
+      when: calico_status.rc != 0
 
     - name: Install custom resource pod network
       command: kubectl create -f {{ custom_resource_remote_src }}
@@ -225,6 +226,7 @@
         src: "{{ join_cluster_remote_src }}"
         dest: files/joincluster
         flat: yes
+      when: join_cluster_command is succeeded
 
     - name: Check if Helm is installed
       command: helm version
@@ -235,7 +237,6 @@
     - name: Install Helm if not installed
       shell: curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
       when: helm_version.rc != 0
-
 
 
 - name: Worker Node Setup
