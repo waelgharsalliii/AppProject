@@ -248,6 +248,12 @@
     join_cluster_remote_src: /tmp/joincluster
   tasks:
 
+    - name: Check if worker node is already part of the cluster
+      shell: "kubectl get nodes | grep $(hostname)"
+      register: worker_already_joined
+      failed_when: false
+      changed_when: false
+
     - name: Copy the join command to server location
       copy:
         src: joincluster
@@ -255,6 +261,8 @@
         mode: '0777'
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
+      when: not worker_already_joined
 
     - name: Join the node to the cluster
       command: sh {{ join_cluster_remote_src }}
+      when: not worker_already_joined
