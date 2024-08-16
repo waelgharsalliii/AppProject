@@ -1,16 +1,19 @@
 pipeline {
     agent any
+  environment {
+        KUBECONFIG = '/var/lib/jenkins/.kube/config'
+    }
 
     stages {
             stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/waelgharsalliii/catchapp.git'
+                git branch: 'devlope', url: 'https://github.com/waelgharsalliii/AppProject.git'
             }
         }
 
-        stage('Build Docker Images') {
+         stage('Build Docker Images') {
             steps {
-                script {
+               dir('catchapp'){
                     // Build Docker images using Docker Compose
                     sh 'docker-compose -f docker-compose.yml build'
                 }
@@ -19,7 +22,7 @@ pipeline {
 
               stage('Deploy') {
                 steps {
-                  script {
+                 dir('catchapp'){
                     echo 'Starting Docker Compose services...'
                     // Start Docker Compose services in detached mode
                     sh 'docker-compose -f docker-compose.yml up -d'
@@ -28,25 +31,22 @@ pipeline {
             }
         }
                 
-             stage('Wait for 5 Minutes') {
+            stage('Wait for 3 Minutes') {
                steps {
-                script {
+                dir('catchapp') {
                     echo 'Waiting for 5 minutes to allow the services to run...'
                     // Wait for 5 minutes
-                    sleep(time: 5, unit: 'MINUTES')
+                    sleep(time: 3, unit: 'MINUTES')
                 }
             }
         }
 
             stage('Teardown') {
               steps {
-                script {
+                dir('catchapp') {
                     echo 'Stopping Docker Compose services...'
                     // Stop and remove Docker Compose services
                     sh 'docker-compose -f docker-compose.yml down'
                 }
             }
-        }
-      
-    }
-}
+        }    
