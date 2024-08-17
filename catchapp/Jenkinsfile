@@ -65,7 +65,7 @@ pipeline {
                     }
                 }
             } */
-        stage('Run Vagrant as wael') {
+        /*stage('Run Vagrant as wael') {
             steps {
                 script {
                     // Run Vagrant commands as wael
@@ -75,7 +75,7 @@ pipeline {
 
                 }
             }
-        }             
+        }     */        
            
 
              stage('Set Permissions') {
