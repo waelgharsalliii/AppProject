@@ -203,8 +203,9 @@
       changed_when: false
 
     - name: Install Calico pod network if not installed
-      command: kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/tigera-operator.yaml
+      command: kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/tigera-operator.yaml --validate=false
       when: calico_status.rc != 0
+
 
     - name: Copy Calico custom resource
       template:
