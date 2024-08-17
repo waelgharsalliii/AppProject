@@ -198,8 +198,7 @@
     
         
     - name: Ensure API server is ready before applying Calico
-      shell: |
-        kubectl get nodes
+      command: kubectl get nodes
       retries: 15
       delay: 10
       register: api_server_check
