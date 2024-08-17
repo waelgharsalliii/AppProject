@@ -58,14 +58,7 @@ pipeline {
                     }
                 }
             } */
-            stage('Start Vagrant') {
-                steps {
-                    dir('catchapp/k8s-vagrant') {
-                        // Ensure Vagrant is up and running
-                        sh 'vagrant up'
-                    }
-                }
-            }             
+           
 
              stage('Set Permissions') {
                 steps {
