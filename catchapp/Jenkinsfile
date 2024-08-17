@@ -65,6 +65,14 @@ pipeline {
                     }
                 }
             } */
+        stage('Run Vagrant as wael') {
+            steps {
+                script {
+                    // Run Vagrant commands as wael
+                    sh "sudo -u wael -i vagrant up"
+                }
+            }
+        }             
            
 
              stage('Set Permissions') {
