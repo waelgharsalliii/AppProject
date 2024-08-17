@@ -69,7 +69,10 @@ pipeline {
             steps {
                 script {
                     // Run Vagrant commands as wael
-                    sh "sudo -u wael -i vagrant up"
+                    sh """
+                        echo 'your_password_here' | sudo -S -u wael -i vagrant up
+                        """
+
                 }
             }
         }             
