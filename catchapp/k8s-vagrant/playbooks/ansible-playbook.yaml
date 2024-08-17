@@ -249,7 +249,6 @@
 - name: Worker Node Setup
   hosts: worker_nodes
   become: yes
-  become_method: sudo
   gather_facts: yes
   vars:
     join_cluster_remote_src: /tmp/joincluster
@@ -261,15 +260,26 @@
       failed_when: false
       changed_when: false
 
+    - name: Debug message if node is already joined
+      debug:
+        msg: "Node {{ inventory_hostname }} is already part of the cluster."
+      when: worker_already_joined.rc == 0
+
     - name: Copy the join command to server location
       copy:
         src: joincluster
         dest: "{{ join_cluster_remote_src }}"
         mode: '0777'
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
       when: worker_already_joined.rc != 0
 
     - name: Join the node to the cluster
       command: sh {{ join_cluster_remote_src }}
       when: worker_already_joined.rc != 0
+      ignore_errors: yes
+      register: join_result
+
+    - name: Debug message if join command fails
+      debug:
+        msg: "Joining node {{ inventory_hostname }} to the cluster failed with error: {{ join_result.stderr }}"
+      when: join_result is failed
+
