@@ -197,16 +197,16 @@
       failed_when: kubeadm_status is not defined or kubeadm_status.rc is not defined
     
     
-    - name: Wait for Kubernetes API server to be available
-      shell: |
-        until kubectl get nodes; do
-          echo "Waiting for API server to respond..."
-          sleep 5
-        done
-      retries: 20  # Increase retries if needed
-      delay: 10    # Increase delay between retries if needed
-      register: wait_for_apiserver
-      until: wait_for_apiserver.rc == 0
+    #- name: Wait for Kubernetes API server to be available
+     # shell: |
+      #  until kubectl get nodes; do
+       #   echo "Waiting for API server to respond..."
+        #  sleep 5
+        #done
+      #retries: 20  # Increase retries if needed
+      #delay: 10    # Increase delay between retries if needed
+     # register: wait_for_apiserver
+     # until: wait_for_apiserver.rc == 0
 
 
     - name: Check if Calico pod network is installed
