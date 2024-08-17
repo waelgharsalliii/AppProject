@@ -70,7 +70,7 @@ pipeline {
                 script {
                     // Run Vagrant commands as wael
                     sh """
-                        echo 'wae01234' | sudo -S -u wael -i vagrant up
+                        echo 'wael01234' | sudo -S -u wael -i vagrant up
                         """
 
                 }
