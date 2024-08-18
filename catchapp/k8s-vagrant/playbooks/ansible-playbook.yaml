@@ -1,4 +1,3 @@
----
 - name: Setup Kubernetes Environment
   hosts: all
   become: yes
