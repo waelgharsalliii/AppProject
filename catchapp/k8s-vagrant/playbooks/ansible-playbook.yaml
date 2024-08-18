@@ -197,13 +197,13 @@
       failed_when: kubeadm_status is not defined or kubeadm_status.rc is not defined
     
         
-    - name: Ensure API server is ready before applying Calico
-      command: kubectl get nodes
-      register: api_server_check
-      retries: 15
-      delay: 10
-      until: api_server_check.rc == 0
-      changed_when: false
+    #- name: Ensure API server is ready before applying Calico
+     # command: kubectl get nodes
+     # register: api_server_check
+      #retries: 15
+      #delay: 10
+      #until: api_server_check.rc == 0
+      #changed_when: false
     
     - name: Check if Calico pod network is installed
       command: kubectl get pods -n kube-system -l k8s-app=calico-node
@@ -213,7 +213,7 @@
     
     - name: Install Calico pod network if not installed
       command: kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/tigera-operator.yaml --validate=false
-      when: calico_status.rc != 0 and api_server_check.rc == 0
+      when: calico_status.rc != 0 
 
 
     - name: Copy Calico custom resource
