@@ -209,7 +209,7 @@
     - name: Join the node to the cluster
       command: sh {{ join_cluster_remote_src }}
 
-   handlers:
+handlers:
       - name: Check docker status
         service:
           name: docker
