@@ -1,3 +1,4 @@
+---
 - name: Setup Kubernetes Environment
   hosts: all
   become: yes
@@ -210,11 +211,11 @@
       command: sh {{ join_cluster_remote_src }}
 
 handlers:
-      - name: Check docker status
-        service:
-          name: docker
-          state: started
-          enabled: yes
-    
-      - name: Reload systemd daemon
-        command: systemctl daemon-reload
+  - name: Check docker status
+    service:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: Reload systemd daemon
+    command: systemctl daemon-reload
