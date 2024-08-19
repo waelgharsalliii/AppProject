@@ -88,7 +88,7 @@ pipeline {
                     '''
                 }
             }
-             stage('Setup Kubernetes') {
+         /*    stage('Setup Kubernetes') {
                 steps {
                     dir('catchapp') {
                        // Ensure Ansible is installed
@@ -98,7 +98,7 @@ pipeline {
                         sh 'ansible-playbook -i k8s-vagrant/inventory/vagrant.hosts k8s-vagrant/playbooks/ansible-playbook.yaml'
                     }
                 }
-            }
+            }*/
     
     
             stage('Check Kubernetes Connectivity') {
