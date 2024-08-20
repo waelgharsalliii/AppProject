@@ -12,19 +12,14 @@ services:
       - mongo
     environment:
       - MONGO_URI=mongodb://admin:wael01234@mongo:27017/catch-db?authSource=admin
-    networks:
-      - catchApp-networks
 
   frontend:
     build: ./frontend
     container_name: catch-frontend
     ports:
       - "80:3000"
-
     environment:
       - REACT_APP_API_URL=:http//catch-backend.default.svc.cluster.local:3001
-    networks:
-      - catchApp-networks
 
   mongo:
     image: mongo:latest
@@ -34,15 +29,10 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: wael01234
     volumes:
       - catch-db-data:/data/db
-    container_name: catch-db
+    container_name: mongodb
     ports:
       - "27017:27017"
-    networks:
-      - catchApp-networks
 
-networks:
-  catchApp-networks:
-    driver: bridge
 
 volumes:
   catch-db-data: {}
