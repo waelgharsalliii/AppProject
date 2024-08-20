@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('dotenv').config(); // Load .env file
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://admin:wael01234@catch-mongodb.default.svc.cluster.local:27017/catch-db?authSource=admin';
 
