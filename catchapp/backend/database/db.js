@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const MONGO_URI = process.env.MONGO_URI || 'admin:wael01234@mongo:27017/catch-db?authSource=admin';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://admin:wael01234@catch-mongodb.default.svc.cluster.local:27017/catch-db?authSource=admin';
 
 const connectDB = async () => {
   try {
