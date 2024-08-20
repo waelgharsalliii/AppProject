@@ -23,74 +23,21 @@ pipeline {
     
         stage('Login and Push to Docker Hub') {
             steps {
-                dir('catchapp/backend') {
+                dir('catchapp') {
                    withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                             sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                            sh 'docker push waelgharsalli/catch-backend:latest'
-                            sh 'docker push waelgharsalli/catch-frontend:latest'
-                            sh 'docker push waelgharsalli/catch-db:latest'
+                            sh 'docker-compose -f docker-compose.yml push'
 
                         }
                     }
                 }
             }
-                /*   stage('Run Vagrant as wael') {
-                    steps {
-                        script {
-                            // Run Vagrant commands as wael
-                            sh "sudo -u wael -i vagrant up"
-                        }
-                    }
-                }    
-                  stage('Deploy') {
-                    steps {
-                     dir('catchapp'){
-                        echo 'Starting Docker Compose services...'
-                        // Start Docker Compose services in detached mode
-                        sh 'docker-compose -f docker-compose.yml up -d'
-                        
-                    }
-                }
-            }
-                    
-                stage('Wait for 3 Minutes') {
-                   steps {
-                    dir('catchapp') {
-                        echo 'Waiting for 5 minutes to allow the services to run...'
-                        // Wait for 5 minutes
-                        sleep(time: 3, unit: 'MINUTES')
-                    }
-                }
-            }
-    
                 stage('Teardown') {
                   steps {
                     dir('catchapp') {
                         echo 'Stopping Docker Compose services...'
                         // Stop and remove Docker Compose services
-                        sh 'docker-compose -f docker-compose.yml down'
-                    }
-                }
-            }   
-            stage('Verify Private Key Files') {
-                steps {
-                    dir('catchapp') {
-                        sh 'ls -l .vagrant/machines/master/virtualbox/private_key'
-                        sh 'ls -l .vagrant/machines/worker-01/virtualbox/private_key'
-                    }
-                }
-            } */
-        /*stage('Run Vagrant as wael') {
-            steps {
-                script {
-                    // Run Vagrant commands as wael
-                    sh """
-                        sudo -u wael -i vagrant up
-                        """
-
-                }
-            }
-        }     */        
+                        sh 'docker-compose -f docker-compose.yml down'      
            
 
              stage('Set Permissions') {
