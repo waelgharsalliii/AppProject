@@ -3,7 +3,7 @@ version: '3.9'
 services:
   backend:
     build: ./backend
-    container_name: catch-backend
+    image: waelgharsalli/backend:latest 
     command: npm run start
     ports:
       - "3001:3001"
@@ -15,11 +15,11 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: catch-frontend
+    image: waelgharsalli/frontend:latest
     ports:
       - "80:3000"
     environment:
-      - REACT_APP_API_URL=:http//catch-backend.default.svc.cluster.local:3001
+      - REACT_APP_API_URL=http://catch-backend.default.svc.cluster.local:3001
 
   mongo:
     image: mongo:latest
