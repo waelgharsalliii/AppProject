@@ -37,7 +37,10 @@ pipeline {
                     dir('catchapp') {
                         echo 'Stopping Docker Compose services...'
                         // Stop and remove Docker Compose services
-                        sh 'docker-compose -f docker-compose.yml down'      
+                        sh 'docker-compose -f docker-compose.yml down'
+                    }
+                  }
+                }
            
 
              stage('Set Permissions') {
