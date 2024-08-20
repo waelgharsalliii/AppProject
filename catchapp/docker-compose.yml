@@ -19,10 +19,10 @@ services:
     build: ./frontend
     container_name: catch-frontend
     ports:
-      - "3000:3000"
+      - "80:3000"
 
     environment:
-      - REACT_APP_API_URL=http://localhost:3001  # Use the backend service name
+      - REACT_APP_API_URL=:http//catch-backend.default.svc.cluster.local:3001
     networks:
       - catchApp-networks
 
