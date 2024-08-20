@@ -33,7 +33,7 @@ const Login = () => {
       return;
     }
     let userFound = null;
-
+    console.log('API URL:', process.env.REACT_APP_API_URL);
     const response = await fetch(`${process.env.REACT_APP_API_URL}/users`);
     const data = await response.json();
     userFound = data.find((user) => user.email === email);
