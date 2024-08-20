@@ -10,8 +10,8 @@ pipeline {
                     git branch: 'main', url: 'https://github.com/waelgharsalliii/AppProject.git'
                 }
             }
-    
-    /*        stage('Build Docker Images') {
+
+            stage('Build Docker Images') {
                 steps {
                    dir('catchapp'){
                         // Build Docker images using Docker Compose
@@ -19,7 +19,22 @@ pipeline {
                     }
                 }
             }
-                stage('Run Vagrant as wael') {
+
+    
+        stage('Login and Push to Docker Hub') {
+            steps {
+                dir('catchapp/backend') {
+                   withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                            sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                            sh 'docker push waelgharsalli/catch-backend:latest'
+                            sh 'docker push waelgharsalli/catch-frontend:latest'
+                            sh 'docker push waelgharsalli/catch-db:latest'
+
+                        }
+                    }
+                }
+            }
+                /*   stage('Run Vagrant as wael') {
                     steps {
                         script {
                             // Run Vagrant commands as wael
