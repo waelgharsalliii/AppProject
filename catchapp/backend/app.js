@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
+const client = require('prom-client'); // Import prom-client
 
 var messageRoutes = require("./routes/messageRoutes");
 var eventRouter = require('./routes/events');
@@ -33,6 +34,35 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Set up prom-client to collect default metrics
+const collectDefaultMetrics = client.collectDefaultMetrics;
+collectDefaultMetrics();
+
+// Example custom metric
+const httpRequestDurationMicroseconds = new client.Histogram({
+  name: 'http_request_duration_ms',
+  help: 'Duration of HTTP requests in ms',
+  labelNames: ['method', 'route', 'code'],
+  buckets: [50, 100, 200, 300, 400, 500, 600, 800, 1000]
+});
+
+app.use((req, res, next) => {
+  const startEpoch = Date.now();
+  res.on('finish', () => {
+    const responseTimeInMs = Date.now() - startEpoch;
+    httpRequestDurationMicroseconds
+      .labels(req.method, req.route ? req.route.path : req.originalUrl, res.statusCode)
+      .observe(responseTimeInMs);
+  });
+  next();
+});
+
+// Add the /metrics route
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', client.register.contentType);
+  res.end(await client.register.metrics());
+});
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/clubs', clubsRouter);
@@ -61,7 +91,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   pingTimeout: 60000,
@@ -77,7 +106,7 @@ io.on("connection", (socket) => {
     socket.join(userData._id);
     socket.emit("connected");
   });
-  
+
   socket.on("join chat", (room) => {
     socket.join(room);
     console.log("User Joined Room: " + room);
