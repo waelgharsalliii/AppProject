@@ -11,7 +11,7 @@ pipeline {
                 }
             }
 
-           /* stage('Build Docker Images') {
+             stage('Build Docker Images') {
                 steps {
                    dir('catchapp'){
                         // Build Docker images using Docker Compose
@@ -40,7 +40,7 @@ pipeline {
                         sh 'docker-compose -f docker-compose.yml down'
                     }
                   }
-                }*/
+                }
            
 
              stage('Set Permissions') {
