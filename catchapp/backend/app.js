@@ -64,9 +64,9 @@ app.get('/metrics', async (req, res) => {
 });
 
 app.use('/', indexRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/clubs', clubsRouter);
-app.use('/api/auth/facebook', facebookRouter);
+app.use('/users', usersRouter);
+app.use('/clubs', clubsRouter);
+app.use('/auth/facebook', facebookRouter);
 app.use('/api', paymentRouter);
 app.use('/api/events', eventRouter);
 app.use('/chat', chatRouter);
@@ -95,7 +95,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://catchapp.com/",
+    origin: "http://catchapp.com",
     // credentials: true,
   },
 });
