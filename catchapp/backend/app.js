@@ -64,11 +64,11 @@ app.get('/metrics', async (req, res) => {
 });
 
 app.use('/', indexRouter);
-app.use('api/users', usersRouter);
-app.use('api/clubs', clubsRouter);
-app.use('api/auth/facebook', facebookRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/clubs', clubsRouter);
+app.use('/api/auth/facebook', facebookRouter);
 app.use('/api', paymentRouter);
-app.use('api/events', eventRouter);
+app.use('/api/events', eventRouter);
 app.use('/chat', chatRouter);
 app.use('/payevent', payEventRouter);
 app.use("/message", messageRoutes);
