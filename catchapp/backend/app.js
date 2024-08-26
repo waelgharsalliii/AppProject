@@ -64,11 +64,11 @@ app.get('/metrics', async (req, res) => {
 });
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/clubs', clubsRouter);
-app.use('/auth/facebook', facebookRouter);
+app.use('api/users', usersRouter);
+app.use('api/clubs', clubsRouter);
+app.use('api/auth/facebook', facebookRouter);
 app.use('/api', paymentRouter);
-app.use('/events', eventRouter);
+app.use('api/events', eventRouter);
 app.use('/chat', chatRouter);
 app.use('/payevent', payEventRouter);
 app.use("/message", messageRoutes);
@@ -95,7 +95,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3100",
+    origin: "http://catchapp.com",
     // credentials: true,
   },
 });
