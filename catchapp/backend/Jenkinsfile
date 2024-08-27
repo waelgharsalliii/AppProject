@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Clone the entire repository
-                git branch: 'devlope', url: 'https://github.com/waelgharsalliii/catchapp.git'
+                git branch: 'devlope', url: 'git@github.com:waelgharsalliii/catchapp.git', credentialsId: 'Jenkins-git-ssh'
                 // Change to the backend directory
                 dir('backend') {
                     // This will be the working directory for subsequent stages
