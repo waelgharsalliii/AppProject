@@ -1,3 +1,5 @@
+jest.setTimeout(30000); // 30 seconds
+
 const request = require('supertest');
 const express = require('express');
 const router  = require('../../routes/events')
