@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -13,6 +14,75 @@ pipeline {
             }
         }
 
+        stage('Build') {
+            steps {
+                dir('catchapp/backend') {
+                    nodejs(nodeJSInstallationName: 'NodeJs') {
+                        sh 'npm install' // or 'yarn install' if you're using yarn
+                    }
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('catchapp/backend') {
+                    nodejs(nodeJSInstallationName: 'NodeJs') {
+                        sh 'npm run test'
+                    }
+                }
+            }
+        }
+
+        stage('SonarQube') {
+            steps {
+                dir('catchapp/backend') {
+                    nodejs(nodeJSInstallationName: 'NodeJs') {
+                        withSonarQubeEnv('sonar') {
+                            sh 'npm run sonar'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('catchapp/backend') {
+                    sh 'docker build -t waelgharsalli/backend-pfe .'
+                }
+            }
+        }
+
+        stage('Login and Push to Docker Hub') {
+            steps {
+                dir('catchapp/backend') {
+                   
+                        withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                            sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                            sh 'docker push waelgharsalli/backend-pfe:latest'
+                        }
+                    }
+                }
+            }
+        
+
+        stage('Publish') {
+            steps {
+                dir('catchapp/backend') {
+                    withCredentials([file(credentialsId: 'nexus-cred', variable: 'mynpmrc')]) {
+                        sh "npm publish --userconfig $mynpmrc --loglevel verbose"
+                    }
+                }
+            }
+        }
+        stage('build Frontend')
+        {
+          steps {
+            build 'Frontend'
+        }}
+    }
+}
         stage('Build') {
             steps {
                 dir('backend') {
