@@ -15,7 +15,7 @@ pipeline {
 
         stage('Install dependencies') {
             steps {
-                dir('frontend') { // Navigate to the frontend directory if it exists
+                dir('catchapp/frontend') { // Navigate to the frontend directory if it exists
                     // Install Node.js dependencies
                     sh 'npm install'
                 }
@@ -24,7 +24,7 @@ pipeline {
     
         stage('SonarQube') {
             steps { 
-                dir('frontend') { // Ensure you're in the correct directory
+                dir('catchapp/frontend') { // Ensure you're in the correct directory
                     nodejs(nodeJSInstallationName: 'NodeJs') {
                         withSonarQubeEnv('sonar') { 
                             sh 'npm run sonar'
@@ -36,7 +36,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                dir('frontend') { // Ensure you're in the correct directory
+                dir('catchapp/frontend') { // Ensure you're in the correct directory
                     script {
                         sh 'docker build -t waelgharsalli/frontend-pfe .'
                     }
@@ -44,20 +44,21 @@ pipeline {
             }
         }
 
-        /*stage('Login and Push to Docker Hub') {
+        stage('Login and Push to Docker Hub') {
             steps {
-                script {
+               dir('catchapp/frontend'){
+               
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                         sh 'docker push waelgharsalli/frontend-pfe:latest'
                     }
                 }
-            }
-        }*/
+            }}
+        
 
         stage('Publish') {
             steps {
-                dir('frontend') { // Ensure you're in the correct directory
+                dir('catchapp/frontend') { // Ensure you're in the correct directory
                     withCredentials([file(credentialsId: 'nexus-front-cred', variable: 'mynpmrc')]) {
                         sh "npm publish --userconfig $mynpmrc --loglevel verbose"
                     }
@@ -66,7 +67,7 @@ pipeline {
         }
          stage('Local Test'){
             steps {
-               build 'TestLocaly'
+               build 'LocallyTest'
         }}
     }
 }
