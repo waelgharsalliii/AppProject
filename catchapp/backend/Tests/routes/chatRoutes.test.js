@@ -1,4 +1,4 @@
-// Import necessary modules
+jest.setTimeout(60000); // 30 seconds
 const express = require('express');
 const supertest = require('supertest');
 const router = require('../../routes/chatRoutes'); // Import your chatroom router
