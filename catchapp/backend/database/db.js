@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://admin:wael01234@localhost:27017/catch-db?authSource=admin';
 
 const connectDB = async () => {
   try {
