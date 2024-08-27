@@ -21,7 +21,7 @@ describe('Event Routes', () => {
   // Test route for GET /events
   
   beforeAll(() => {
-    mongoose.connect('mongodb://admin:wael01234@mongo:27017/catch-db?authSource=admin');
+    mongoose.connect('mongodb://admin:wael01234@localhost:27017/catch-db?authSource=admin');
 });
 
 afterAll(() => {
