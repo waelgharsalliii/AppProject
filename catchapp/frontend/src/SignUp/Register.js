@@ -58,7 +58,7 @@ const Register = () => {
       formData.append("profilePic", profilePic, profilePic.name);
     }
     console.log(formData);
-    await fetch("${process.env.REACT_APP_API_URL}/users/signup", {
+    await fetch(`${process.env.REACT_APP_API_URL}/users/signup`, {
       method: "POST",
       body: formData
     })
