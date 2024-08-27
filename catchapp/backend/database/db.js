@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const MONGO_URI = process.env.MONGO_URI || 'admin:wael01234@localhost:27017/old-catch-db?authSource=admin';
+const MONGO_URI = process.env.MONGO_URI || 'MONGO_URI=mongodb://admin:wael01234@catch-mongo:27017/catch-db-test?authSource=admin
+';
 
 const connectDB = async () => {
   try {
