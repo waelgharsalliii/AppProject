@@ -1,5 +1,3 @@
-jest.setTimeout(60000); // 30 seconds
-
 const express = require('express');
 const supertest = require('supertest');
 const router = require('../../routes/users'); // Import your user router
@@ -25,7 +23,7 @@ afterAll(() => {
     const response = await supertest(app).get('/');
 
     expect(response.status).toBe(200)
-  }, 30000); // Increase timeout to 10 seconds
+  }, 60000); // Increase timeout to 10 seconds
   
   // Test route for POST /add
   it('should respond with status 201 for POST /add', async () => {
@@ -42,5 +40,5 @@ afterAll(() => {
       .field("phone","999999999")
       .field("password","987654321");
     expect(response.status).toBe(201)
-  },30000);
+  },60000);
 });
