@@ -11,7 +11,7 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGO_URI=mongodb://admin:wael01234@mongo:27017/catch-db?authSource=admin
+      - MONGO_URI=mongodb://admin:wael01234@mongo:27017/catch-db-prod?authSource=admin
 
   frontend:
     build: ./frontend
@@ -19,7 +19,7 @@ services:
     ports:
       - "80:3000"
     environment:
-      - REACT_APP_API_URL=http://catch-backend.default.svc.cluster.local:3001
+      - REACT_APP_API_URL=http://catchapp.com
 
   mongo:
     image: mongo:latest
