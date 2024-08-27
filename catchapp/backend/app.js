@@ -66,7 +66,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3100",
+    origin: "http://localhost:3000",
     // credentials: true,
   },
 });
