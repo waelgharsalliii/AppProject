@@ -78,16 +78,124 @@ const Register = () => {
     }
   };
 
-  return (
+return (
     <div>
-      <NavBar />
+      <NavBar></NavBar>
       <div className="Container">
         <div className="title">Registration</div>
         <Toaster position="top-center" reverseOrder={false} />
         <br />
         <form onSubmit={handleSubmit}>
           <div className="user-details">
-            {/* Form Inputs */}
+            <div className="input-box">
+              <label className="details">FirstName</label>
+              <input
+                value={fname}
+                placeholder="firstname"
+                id="firstname"
+                type="text"
+                name="firstname"
+                onChange={(e) => setFname(e.target.value)}
+              />
+            </div>
+            <div className="input-box">
+              <label className="details">LastName</label>
+              <input
+                value={lname}
+                placeholder="lastname"
+                id="lastname"
+                type="text"
+                name="lastname"
+                onChange={(e) => setLname(e.target.value)}
+              />
+            </div>
+
+            <div className="input-box">
+              <label className="details">Birthdate</label>
+              <input
+                value={birthdate}
+                type="date"
+                id="birthdate"
+                name="birthdate"
+                onChange={(e) => setBirthdate(e.target.value)}
+              />
+            </div>
+            <div className="input-box">
+              <label className="details">Phone</label>
+              <input
+                value={phone}
+                placeholder="phone"
+                type="number"
+                id="phone"
+                name="phone"
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
+            <div className="input-box">
+              <label className="details">
+                Email<ion-icon name="mail-outline"></ion-icon>
+              </label>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder="email@gmail.com"
+                id="email"
+                name="email"
+              />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={{fontWeight:"500" }}>Profile Picture</label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type="file"
+                  id="profile-pic"
+                  accept="image/*"
+                  onChange={handleProfilePicChange}
+                  style={{marginTop:"10px"}}
+                />
+                <div
+                  style={{
+                    backgroundColor: "#eee",
+                    width: "px",
+                    height: "0px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="input-box" style={{ position: "relative" }}>
+              <label className="details">Password</label>
+              <input
+                value={password}
+                onChange={(e) => setPass(e.target.value)}
+                type={passwordVisible ? "text" : "password"}
+                placeholder="***********"
+                id="password"
+                name="password"
+              />
+
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={togglePasswordVisibility}
+                style={{
+                  position: "absolute",
+                  top: "70%",
+                  right: "2px",
+                  transform: "translateY(-50%)",
+                }}
+              >
+                {passwordVisible ? (
+                  <i className="bi bi-eye-fill"></i>
+                ) : (
+                  <i className="bi bi-eye-slash-fill"></i>
+                )}
+              </button>
+            </div>
           </div>
           <button type="submit" className="btn btn-info">
             Register
