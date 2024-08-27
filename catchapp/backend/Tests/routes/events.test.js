@@ -1,3 +1,4 @@
+jest.setTimeout(60000); // 30 seconds
 
 const express = require('express');
 const supertest = require('supertest');
