@@ -8,7 +8,7 @@ pipeline {
                 checkout scmGit(
                     branches: [[name: '*/devlope']],
                     extensions: [],
-                    userRemoteConfigs: [[credentialsId: 'jenkins-front-ssh', url: 'https://github.com/waelgharsalliii/catchapp.git']]
+                    userRemoteConfigs: [[credentialsId: 'jenkins-front-ssh', url: 'https://github.com/waelgharsalliii/AppProject.git']]
                 )
             }
         }
