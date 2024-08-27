@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const MONGO_URI = process.env.MONGO_URI || 'MONGO_URI=mongodb://admin:wael01234@mongo:27017/catch-db-test-test?authSource=admin';
+const MONGO_URI = process.env.MONGO_URI || 'MONGO_URI=mongodb://admin:wael01234@mongo:27017/catch-db-test?authSource=admin';
 
 const connectDB = async () => {
   try {
