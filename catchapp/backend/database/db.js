@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config(); // Load .env file
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://admin:wael01234@mongo:27017/catch-db-prod?authSource=admin';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://admin:wael01234@catch-mongodb:27017/catch-db-prod?authSource=admin';
 
 const connectDB = async () => {
   try {
