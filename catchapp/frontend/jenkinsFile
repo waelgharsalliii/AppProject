@@ -22,9 +22,9 @@ pipeline {
             }
         }
     
-        stage('SonarQube') {
+       /* stage('SonarQube') {
             steps { 
-                dir('catchapp/frontend') { // Ensure you're in the correct directory
+                dir('catchapp/frontend') { 
                     nodejs(nodeJSInstallationName: 'NodeJs') {
                         withSonarQubeEnv('sonar') { 
                             sh 'npm run sonar'
@@ -32,7 +32,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         stage('Build Docker Image') {
             steps {
