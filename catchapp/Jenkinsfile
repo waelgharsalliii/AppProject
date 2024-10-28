@@ -53,19 +53,6 @@ pipeline {
                     '''
                 }
             }
-         /*    stage('Setup Kubernetes') {
-                steps {
-                    dir('catchapp') {
-                       // Ensure Ansible is installed
-                        sh 'ansible --version'
-    
-                        // Run Ansible playbook to configure Kubernetes
-                        sh 'ansible-playbook -i k8s-vagrant/inventory/vagrant.hosts k8s-vagrant/playbooks/ansible-playbook.yaml'
-                    }
-                }
-            }*/
-    
-    
             stage('Check Kubernetes Connectivity') {
                 steps {
                     script {
@@ -76,9 +63,6 @@ pipeline {
                     }
                 }
             }
-            
-    
-            
               stage('Deploy Application with Helm') {
                 steps {
                     dir('catchapp') {
