@@ -14,7 +14,7 @@ pipeline {
             steps {
                 dir('catchapp/backend') {
                     nodejs(nodeJSInstallationName: 'NodeJs') {
-                        sh 'npm install' // or 'yarn install' if you're using yarn
+                        sh 'npm install' // or 'yarn install' if you're using yarn ..
                     }
                 }
             }
