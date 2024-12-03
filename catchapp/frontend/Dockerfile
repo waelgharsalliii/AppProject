@@ -2,7 +2,7 @@
 FROM node:20.11-alpine
 
 # Install curl
-RUN apt-get update && apt-get install -y curl
+RUN apk add --no-cache curl
 
 # Set the working directory in the container
 WORKDIR /src
