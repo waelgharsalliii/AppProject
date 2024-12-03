@@ -5,9 +5,7 @@
     "scripts": {
       "start": "nodemon ./bin/www",
       "test": "jest",
-      "coverage": "nyc -r cobertura -r test-summary -r html npm test",
-      "coverage-lcov": "nyc -r cobertura -r test-summary -r lcov npm test",
-      "build": "echo 'Running Build script'",
+            "build": "echo 'Running Build script'",
       "sonar": "sonar-scanner"
     },
     "dependencies": {
