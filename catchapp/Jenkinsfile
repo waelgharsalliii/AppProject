@@ -36,7 +36,7 @@ pipeline {
                 dir('catchapp') {
                     echo 'Waiting for 5 minutes to allow the services to run...'
                     // Wait for 5 minutes
-                    sleep(time: 5, unit: 'MINUTES')
+                    sleep(time: 1, unit: 'MINUTES')
                 }
             }
         }
@@ -46,7 +46,7 @@ pipeline {
                     dir('catchapp') {
                         script {
                             // Check connectivity between backend and mongo
-                            def result = sh(script: 'docker-compose exec backend ping -c 4 mongo', returnStatus: true)
+                            def result = sh(script: 'docker-compose exec -T backend ping -c 4 mongo', returnStatus: true)
                             if (result != 0) {
                                 error "Backend to Mongo connectivity test failed!"
                         }
@@ -60,7 +60,7 @@ pipeline {
                     dir('catchapp') {
                         script {
                             // Check connectivity between frontend and backend
-                            def result = sh(script: 'docker-compose exec frontend curl -s -o /dev/null -w "%{http_code}" http://backend:3001', returnStatus: true)
+                            def result = sh(script: 'docker-compose exec -T frontend curl -s -o /dev/null -w "%{http_code}" http://backend:3001', returnStatus: true)
                             if (result != 200) {
                                 error "Frontend to Backend connectivity test failed!"
                         }
