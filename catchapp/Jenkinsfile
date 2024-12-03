@@ -56,13 +56,13 @@ pipeline {
         }
 
             stage('Verify Frontend-Backend Connectivity') {
-                steps {
-                    dir('catchapp') {
-                        script {
-                            // Check connectivity between frontend and backend
-                            def result = sh(script: 'docker-compose exec -T frontend curl -s -o /dev/null -w "%{http_code}" http://backend:3001', returnStatus: true)
-                            if (result != 200) {
-                                error "Frontend to Backend connectivity test failed!"
+                        steps {
+                            dir('catchapp') {
+                                script {
+                                    // Check connectivity between frontend and backend
+                                    def httpCode = sh(script: 'docker-compose exec -T frontend curl -s -o /dev/null -w "%{http_code}" http://backend:3001', returnStdout: true).trim()
+                                    if (httpCode != '200') {
+                                        error "Frontend to Backend connectivity test failed! HTTP status code: ${httpCode}"
                         }
                     }
                 }
