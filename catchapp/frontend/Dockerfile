@@ -1,6 +1,9 @@
 # Use the official Node.js 20 image as a base
 FROM node:20.11-alpine
 
+# Install curl
+RUN apt-get update && apt-get install -y curl
+
 # Set the working directory in the container
 WORKDIR /src
 
