@@ -41,6 +41,34 @@ pipeline {
             }
         }
 
+            stage('Verify Backend-Mongo Connectivity') {
+                steps {
+                    dir('catchapp') {
+                        script {
+                            // Check connectivity between backend and mongo
+                            def result = sh(script: 'docker-compose exec backend ping -c 4 mongo', returnStatus: true)
+                            if (result != 0) {
+                                error "Backend to Mongo connectivity test failed!"
+                        }
+                    }
+                }
+            }
+        }
+
+            stage('Verify Frontend-Backend Connectivity') {
+                steps {
+                    dir('catchapp') {
+                        script {
+                            // Check connectivity between frontend and backend
+                            def result = sh(script: 'docker-compose exec frontend curl -s -o /dev/null -w "%{http_code}" http://backend:3001', returnStatus: true)
+                            if (result != 200) {
+                                error "Frontend to Backend connectivity test failed!"
+                        }
+                    }
+                }
+            }
+        }
+
             stage('Teardown') {
               steps {
                 dir('catchapp') {
