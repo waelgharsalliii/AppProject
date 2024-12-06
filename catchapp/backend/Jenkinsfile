@@ -8,7 +8,7 @@ pipeline {
                 git branch: 'devlope', url: 'https://github.com/waelgharsalliii/AppProject.git'
                 }
             }
-        //triger
+        
 
         stage('Build') {
             steps {
