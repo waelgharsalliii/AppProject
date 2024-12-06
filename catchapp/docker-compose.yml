@@ -19,7 +19,7 @@ services:
     ports:
       - "80:3000"
     environment:
-      - REACT_APP_API_URL=https://catchapp.com
+      - REACT_APP_API_URL=http://catchapp.com
 
   mongo:
     image: mongo:latest
